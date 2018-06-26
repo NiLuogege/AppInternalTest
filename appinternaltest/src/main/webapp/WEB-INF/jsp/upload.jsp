@@ -11,12 +11,13 @@
 <body>
 <div class="panel-body">
 
-    <form action="doUpload" method="post">
+    <form action="doUpload" method="post" enctype="multipart/form-data">
         <table>
             <tr>
                 <td>请选择app:</td>
                 <td>
                     <input id="selectApp" accept="application/vnd.android.package-archive" type="file" name="app"/>
+                    <%--<input id="selectApp" accept="multipart/form-data" type="file" name="app"/>--%>
                 </td>
             </tr>
 
