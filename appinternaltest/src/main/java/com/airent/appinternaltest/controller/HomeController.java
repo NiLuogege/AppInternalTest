@@ -84,7 +84,7 @@ public class HomeController {
         }
 
 
-        makeQRImage(app, appRootDir);
+        makeQRImage(app, appRootDir,request);
 
         app.setCreateDate(new Date());
         app.setDownloadUrl("app/" + app.getAppName());
@@ -103,9 +103,10 @@ public class HomeController {
      *
      * @param app
      * @param appRootDir
+     * @param request
      * @throws IOException
      */
-    private void makeQRImage(App app, File appRootDir) throws IOException {
+    private void makeQRImage(App app, File appRootDir, HttpServletRequest request) throws IOException {
         if (app != null) {
             String appName = app.getAppName();
             String md5Name = app.getMd5Name();
@@ -119,8 +120,12 @@ public class HomeController {
                     qrDirs.mkdirs();
                 }
 
+                String localName = request.getLocalAddr();
+
+                System.out.println("localName="+localName);
+
                 File qr = new File(qrDirs, md5Name+".png");
-                String prPath = "app/qr/" + appName;
+                String prPath = "http://"+localName+"/app/qr/" + appName;
                 app.setQrPath(prPath);
                 QRCodeUtil.qrCodeEncode(prPath, qr);
             }
