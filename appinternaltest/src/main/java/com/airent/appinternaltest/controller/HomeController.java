@@ -2,6 +2,7 @@ package com.airent.appinternaltest.controller;
 
 import com.airent.appinternaltest.bean.App;
 import com.airent.appinternaltest.service.AppService;
+import com.airent.appinternaltest.utils.Md5Utils;
 import com.airent.appinternaltest.utils.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -73,7 +74,9 @@ public class HomeController {
                 MultipartFile file = multiRequest.getFile(names.next().toString());
                 if (file != null) {
                     String filename = file.getOriginalFilename();
+                    String hash = Md5Utils.hash(filename);
                     app.setAppName(filename);
+                    app.setMd5Name(hash);
                     File appFile = new File(appRootDir, filename);
                     file.transferTo(appFile);
                 }
@@ -81,7 +84,7 @@ public class HomeController {
         }
 
 
-        makeQRImage(app, appRootDir, app.getAppName());
+        makeQRImage(app, appRootDir);
 
         app.setCreateDate(new Date());
         app.setDownloadUrl("app/" + app.getAppName());
@@ -100,24 +103,27 @@ public class HomeController {
      *
      * @param app
      * @param appRootDir
-     * @param appName
      * @throws IOException
      */
-    private void makeQRImage(App app, File appRootDir, String appName) throws IOException {
-        if (null != appRootDir && null != appName && !"".equals(appName)) {
-            if (!appRootDir.exists()) {
-                appRootDir.mkdirs();
-            }
+    private void makeQRImage(App app, File appRootDir) throws IOException {
+        if (app != null) {
+            String appName = app.getAppName();
+            String md5Name = app.getMd5Name();
+            if (null != appRootDir && null != appName && !"".equals(appName)) {
+                if (!appRootDir.exists()) {
+                    appRootDir.mkdirs();
+                }
 
-            File qrDirs = new File(appRootDir, "qr");
-            if (!qrDirs.exists()) {
-                qrDirs.mkdirs();
-            }
+                File qrDirs = new File(appRootDir, "qr");
+                if (!qrDirs.exists()) {
+                    qrDirs.mkdirs();
+                }
 
-            File qr = new File(qrDirs, appName);
-            String prPath = "app/qr/" + appName;
-            app.setQrPath(prPath);
-            QRCodeUtil.qrCodeEncode(prPath, qr);
+                File qr = new File(qrDirs, md5Name+".png");
+                String prPath = "app/qr/" + appName;
+                app.setQrPath(prPath);
+                QRCodeUtil.qrCodeEncode(prPath, qr);
+            }
         }
     }
 }

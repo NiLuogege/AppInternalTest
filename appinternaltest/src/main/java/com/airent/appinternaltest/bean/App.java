@@ -5,10 +5,19 @@ import java.util.Date;
 public class App {
     private int id;
     private String appName;
+    private String md5Name;
     private Date createDate;
     private String downloadUrl;
     private String qrPath;
 
+
+    public String getMd5Name() {
+        return md5Name;
+    }
+
+    public void setMd5Name(String md5Name) {
+        this.md5Name = md5Name;
+    }
     public String getQrPath() {
         return qrPath;
     }
@@ -50,13 +59,4 @@ public class App {
         this.downloadUrl = downloadUrl;
     }
 
-    @Override
-    public String toString() {
-        return "App{" +
-                "id=" + id +
-                ", appName='" + appName + '\'' +
-                ", createDate=" + createDate +
-                ", downloadUrl='" + downloadUrl + '\'' +
-                '}';
-    }
 }
