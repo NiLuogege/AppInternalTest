@@ -18,4 +18,10 @@ public class AppServiceImpl implements AppService {
     public List<App> getAll() {
         return appMapper.getAll();
     }
+
+    @Override
+    public void insert(App app) {
+        if (null != app)
+            appMapper.insert(app);
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -19,8 +20,12 @@ public class AppinternaltestApplicationTests {
 
     @Test
     public void contextLoads() {
-        List<App> all = appService.getAll();
-        System.out.println("size=" + all.size() + "  " + all.toString());
+//        List<App> all = appService.getAll();
+        App app  = new App();
+        app.setDownloadUrl("url");
+        app.setAppName("name");
+        app.setCreateData(new Date());
+        appService.insert(app);
     }
 
 }

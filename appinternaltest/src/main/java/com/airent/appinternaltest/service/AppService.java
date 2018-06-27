@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface AppService {
     List<App> getAll();
+    void insert(App app);
 }
