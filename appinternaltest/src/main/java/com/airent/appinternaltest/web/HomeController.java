@@ -17,8 +17,7 @@ import java.util.Iterator;
 public class HomeController {
 
     @RequestMapping("/home")
-    public String home(Model m) throws Exception {
-
+    public String home() throws Exception {
         return "home";
     }
 
