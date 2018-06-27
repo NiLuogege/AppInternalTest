@@ -14,11 +14,12 @@ public interface AppMapper {
     @Results({
             @Result(property = "id", column = "id"),
             @Result(property = "appName", column = "app_name"),
-            @Result(property = "createData", column = "create_data"),
-            @Result(property = "downloadUrl", column = "download_url")
+            @Result(property = "createDate", column = "create_date"),
+            @Result(property = "downloadUrl", column = "download_url"),
+            @Result(property = "qrPath", column = "qr_path")
     })
     List<App> getAll();
 
-    @Insert("insert into app_(app_name,create_data,download_url) values(#{appName},#{createData},#{downloadUrl})")
+    @Insert("insert into app_(app_name,create_date,download_url,qr_path) values(#{appName},#{createDate},#{downloadUrl},#{qrPath})")
     void insert(App app);
 }

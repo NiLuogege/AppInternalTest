@@ -2,6 +2,7 @@ package com.airent.appinternaltest.controller;
 
 import com.airent.appinternaltest.bean.App;
 import com.airent.appinternaltest.service.AppService;
+import com.airent.appinternaltest.utils.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,14 +80,44 @@ public class HomeController {
             }
         }
 
-        app.setCreateData(new Date());
-        app.setDownloadUrl("url");
+
+        makeQRImage(app, appRootDir, app.getAppName());
+
+        app.setCreateDate(new Date());
+        app.setDownloadUrl("app/" + app.getAppName());
+
         appService.insert(app);
 
         long endTime = System.currentTimeMillis();
 
 
         System.out.println("上传时间：" + String.valueOf(endTime - startTime) + "ms");
-        return "home";
+        return "redirect:/home";
+    }
+
+    /**
+     * 生成二维码
+     *
+     * @param app
+     * @param appRootDir
+     * @param appName
+     * @throws IOException
+     */
+    private void makeQRImage(App app, File appRootDir, String appName) throws IOException {
+        if (null != appRootDir && null != appName && !"".equals(appName)) {
+            if (!appRootDir.exists()) {
+                appRootDir.mkdirs();
+            }
+
+            File qrDirs = new File(appRootDir, "qr");
+            if (!qrDirs.exists()) {
+                qrDirs.mkdirs();
+            }
+
+            File qr = new File(qrDirs, appName);
+            String prPath = "app/qr/" + appName;
+            app.setQrPath(prPath);
+            QRCodeUtil.qrCodeEncode(prPath, qr);
+        }
     }
 }

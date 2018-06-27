@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,7 +23,7 @@ public class AppinternaltestApplicationTests {
         App app  = new App();
         app.setDownloadUrl("url");
         app.setAppName("name");
-        app.setCreateData(new Date());
+        app.setCreateDate(new Date());
         appService.insert(app);
     }
 

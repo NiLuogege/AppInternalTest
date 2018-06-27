@@ -5,15 +5,24 @@ import java.util.Date;
 public class App {
     private int id;
     private String appName;
-    private Date createData;
+    private Date createDate;
     private String downloadUrl;
+    private String qrPath;
 
-    public Date getCreateData() {
-        return createData;
+    public String getQrPath() {
+        return qrPath;
     }
 
-    public void setCreateData(Date createData) {
-        this.createData = createData;
+    public void setQrPath(String qrPath) {
+        this.qrPath = qrPath;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public int getId() {
@@ -46,7 +55,7 @@ public class App {
         return "App{" +
                 "id=" + id +
                 ", appName='" + appName + '\'' +
-                ", createData=" + createData +
+                ", createDate=" + createDate +
                 ", downloadUrl='" + downloadUrl + '\'' +
                 '}';
     }
