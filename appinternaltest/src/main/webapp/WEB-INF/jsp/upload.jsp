@@ -6,18 +6,18 @@
     <script src="js/jquery/2.0.0/jquery.min.js"></script>
     <link href="css/bootstrap/3.3.6/bootstrap.css" rel="stylesheet"/>
     <script src="js/bootstrap/3.3.6/bootstrap.js"></script>
+
 </head>
 
 <body>
 <div class="panel-body">
 
-    <form action="doUpload" method="post" enctype="multipart/form-data">
+    <form id="uploadForm" action="doUpload" method="post" enctype="multipart/form-data">
         <table>
             <tr>
                 <td>请选择app:</td>
                 <td>
                     <input id="selectApp" accept="application/vnd.android.package-archive" type="file" name="app"/>
-                    <%--<input id="selectApp" accept="multipart/form-data" type="file" name="app"/>--%>
                 </td>
             </tr>
 

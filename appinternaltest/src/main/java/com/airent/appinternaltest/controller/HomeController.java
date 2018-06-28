@@ -181,7 +181,11 @@ public class HomeController {
 
                     appService.insert(app);
                 }
+            } else {
+                new RuntimeException("没有选择上传资源");
             }
+        } else {
+            new RuntimeException("没有选择上传资源");
         }
 
         return "redirect:/home";
