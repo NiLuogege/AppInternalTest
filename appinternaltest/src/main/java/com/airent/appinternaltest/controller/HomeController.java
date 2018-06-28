@@ -158,7 +158,6 @@ public class HomeController {
                     app.setCreateDate(date);
                     String downloadUrl = "http://" + request.getLocalName() + ":" + erverPort + "/download?md5Name=" + Md5Name;
                     app.setDownloadUrl(downloadUrl);
-                    app.setQrPath(downloadUrl);
 
                     makeQRImage(app, appRootDir);
 
@@ -190,7 +189,7 @@ public class HomeController {
                     qrDirs.mkdirs();
                 }
                 File qr = new File(qrDirs, md5Name + ".png");
-                QRCodeUtil.qrCodeEncode(app.getQrPath(), qr);
+                QRCodeUtil.qrCodeEncode(app.getDownloadUrl(), qr);
             }
         }
     }

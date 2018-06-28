@@ -13,13 +13,12 @@ public interface AppMapper {
             @Result(property = "appName", column = "app_name"),
             @Result(property = "md5Name", column = "md5_name"),
             @Result(property = "createDate", column = "create_date"),
-            @Result(property = "downloadUrl", column = "download_url"),
-            @Result(property = "qrPath", column = "qr_path")
+            @Result(property = "downloadUrl", column = "download_url")
     })
     List<App> getAll();
 
-    @Insert("insert into app_(app_name,create_date,download_url,qr_path,md5_name) " +
-            "values(#{appName},#{createDate},#{downloadUrl},#{qrPath},#{md5Name})")
+    @Insert("insert into app_(app_name,create_date,download_url,md5_name) " +
+            "values(#{appName},#{createDate},#{downloadUrl},#{md5Name})")
     void insert(App app);
 
     @Delete("delete from app_ where id = #{id}")

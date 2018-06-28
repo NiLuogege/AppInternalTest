@@ -8,7 +8,6 @@ public class App {
     private String md5Name;
     private Date createDate;
     private String downloadUrl;
-    private String qrPath;
 
 
     public String getMd5Name() {
@@ -17,13 +16,6 @@ public class App {
 
     public void setMd5Name(String md5Name) {
         this.md5Name = md5Name;
-    }
-    public String getQrPath() {
-        return qrPath;
-    }
-
-    public void setQrPath(String qrPath) {
-        this.qrPath = qrPath;
     }
 
     public Date getCreateDate() {
