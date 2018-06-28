@@ -13,10 +13,13 @@
 <body>
 <h1>APP内部测试</h1>
 <form action="upload" method="post">
-    <button type="submit" class="btn btn-primary">上传应用</button>
+    <button type="submit" class="btn btn-info btn-lg">
+        <span class="glyphicon glyphicon-cloud-upload"></span>
+        上传应用
+    </button>
 </form>
 
-<table>
+<table class="table table-hover">
     <tr>
         <td>名称</td>
         <td>上传日期</td>

@@ -12,21 +12,11 @@
 <body>
 <div class="panel-body">
 
-    <form id="uploadForm" action="doUpload" method="post" enctype="multipart/form-data">
-        <table>
-            <tr>
-                <td>请选择app:</td>
-                <td>
-                    <input id="selectApp" accept="application/vnd.android.package-archive" type="file" name="app"/>
-                </td>
-            </tr>
-
-            <tr class="submitTR">
-                <td colspan="2" align="center">
-                    <button type="submit" class="btn btn-info">开始上传</button>
-                </td>
-            </tr>
-        </table>
+    <form id="uploadForm" action="doUpload" method="post" enctype="multipart/form-data" role="form">
+        <div class="form-group">
+            请选择app:<input id="selectApp" accept="application/vnd.android.package-archive" type="file" name="app"/>
+        </div>
+        <button type="submit" class="btn btn-info">开始上传</button>
 
     </form>
 
