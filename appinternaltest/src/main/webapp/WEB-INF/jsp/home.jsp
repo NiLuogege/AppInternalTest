@@ -28,7 +28,7 @@
             <td>${app.appName}</td>
             <td><fmt:formatDate value="${app.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
             <td><a href="/download?md5Name=${app.md5Name}">点击下载</a></td>
-            <td><img src="app/qr/${app.md5Name}"></td>
+            <td><img src="app/qr/${app.md5Name}.png"></td>
         </tr>
     </c:forEach>
 

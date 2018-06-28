@@ -5,6 +5,7 @@ import com.airent.appinternaltest.service.AppService;
 import com.airent.appinternaltest.utils.Md5Utils;
 import com.airent.appinternaltest.utils.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,9 @@ import java.util.List;
 public class HomeController {
     @Autowired
     AppService appService;
+
+    @Value("${server.port}")
+    private String erverPort;
 
 
     @RequestMapping("/home")
@@ -51,15 +55,15 @@ public class HomeController {
      * @return
      */
     @RequestMapping("/download")
-    public void doDownload(HttpSession session, HttpServletResponse response,String md5Name) {
-        String fileName = md5Name+".app";
+    public void doDownload(HttpSession session, HttpServletResponse response, String md5Name) {
+        String fileName = md5Name;
         if (null != fileName) {
             //文件存储路径
             String appPath = session.getServletContext().getRealPath("/app");
             File app = new File(appPath, fileName);
             if (app.exists()) {
                 response.setContentType("application/force-download");//设置强制下载
-                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);//设置文件名
+                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName + ".apk");//设置文件名
                 byte[] buffer = new byte[1024];
                 FileInputStream fis = null;
                 BufferedInputStream bis = null;
@@ -104,6 +108,15 @@ public class HomeController {
      */
     @RequestMapping("/doUpload")
     public String doUpload(HttpSession session, HttpServletRequest request) throws IOException {
+//        System.out.println("浏览器发出请求时的完整URL，包括协议 主机名 端口(如果有): " + request.getRequestURL());
+//        System.out.println("浏览器发出请求的资源名部分，去掉了协议和主机名: " + request.getRequestURI());
+//        System.out.println("请求行中的参数部分: " + request.getQueryString());
+//        System.out.println("浏览器所处于的客户机的IP地址: " + request.getRemoteAddr());
+//        System.out.println("浏览器所处于的客户机的主机名: " + request.getRemoteHost());
+//        System.out.println("浏览器所处于的客户机使用的网络端口: " + request.getRemotePort());
+//        System.out.println("服务器的IP地址: " + request.getLocalAddr());
+//        System.out.println("服务器的主机名: " + request.getLocalName());
+//        System.out.println("得到客户机请求方式: " + request.getMethod());
 
         //获取存储app文件夹的路径
         String appPath = session.getServletContext().getRealPath("/app");
@@ -137,9 +150,11 @@ public class HomeController {
                     app.setAppName(filename);
                     app.setMd5Name(Md5Name);
                     app.setCreateDate(date);
-                    app.setDownloadUrl("app/" + app.getAppName());
+                    String downloadUrl = "http://" + request.getLocalName() +":"+ erverPort + "/download?md5Name=" + Md5Name;
+                    app.setDownloadUrl(downloadUrl);
+                    app.setQrPath(downloadUrl);
 
-                    makeQRImage(app, appRootDir, request);
+                    makeQRImage(app, appRootDir);
 
                     appService.insert(app);
                 }
@@ -154,10 +169,9 @@ public class HomeController {
      *
      * @param app
      * @param appRootDir
-     * @param request
      * @throws IOException
      */
-    private void makeQRImage(App app, File appRootDir, HttpServletRequest request) throws IOException {
+    private void makeQRImage(App app, File appRootDir) throws IOException {
         if (app != null) {
             String appName = app.getAppName();
             String md5Name = app.getMd5Name();
@@ -170,15 +184,8 @@ public class HomeController {
                 if (!qrDirs.exists()) {
                     qrDirs.mkdirs();
                 }
-
-                String localName = request.getLocalAddr();
-
-                System.out.println("localName=" + localName);
-
                 File qr = new File(qrDirs, md5Name + ".png");
-                String prPath = "http://" + localName + "/app/qr/" + appName;
-                app.setQrPath(prPath);
-                QRCodeUtil.qrCodeEncode(prPath, qr);
+                QRCodeUtil.qrCodeEncode(app.getQrPath(), qr);
             }
         }
     }
