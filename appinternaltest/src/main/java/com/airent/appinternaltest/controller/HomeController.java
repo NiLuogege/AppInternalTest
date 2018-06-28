@@ -49,8 +49,26 @@ public class HomeController {
     }
 
     @RequestMapping("/delete")
-    public String delete(int id) {
-        appService.delete(id);
+    public String delete(HttpSession session, App app) {
+        appService.delete(app.getId());
+
+        //获取存储app文件夹的路径
+        String appPath = session.getServletContext().getRealPath("/app");
+        File appRootDir = new File(appPath);
+        if (appRootDir.exists()) {
+            File appFile = new File(appRootDir, app.getMd5Name());
+            if (appFile.exists()) {
+                appFile.delete();
+            }
+
+            File qrDirs = new File(appRootDir, "qr");
+            if (qrDirs.exists()) {
+                File qr = new File(qrDirs, app.getMd5Name() + ".png");
+                qr.delete();
+            }
+        }
+
+
         return "redirect:/home";
     }
 
