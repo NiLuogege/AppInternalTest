@@ -48,6 +48,12 @@ public class HomeController {
         return "upload";
     }
 
+    @RequestMapping("/delete")
+    public String delete(int id) {
+        appService.delete(id);
+        return "redirect:/home";
+    }
+
 
     /**
      * 下载文件
@@ -150,7 +156,7 @@ public class HomeController {
                     app.setAppName(filename);
                     app.setMd5Name(Md5Name);
                     app.setCreateDate(date);
-                    String downloadUrl = "http://" + request.getLocalName() +":"+ erverPort + "/download?md5Name=" + Md5Name;
+                    String downloadUrl = "http://" + request.getLocalName() + ":" + erverPort + "/download?md5Name=" + Md5Name;
                     app.setDownloadUrl(downloadUrl);
                     app.setQrPath(downloadUrl);
 
@@ -173,9 +179,8 @@ public class HomeController {
      */
     private void makeQRImage(App app, File appRootDir) throws IOException {
         if (app != null) {
-            String appName = app.getAppName();
             String md5Name = app.getMd5Name();
-            if (null != appRootDir && null != appName && !"".equals(appName)) {
+            if (null != appRootDir && null != md5Name && !"".equals(md5Name)) {
                 if (!appRootDir.exists()) {
                     appRootDir.mkdirs();
                 }

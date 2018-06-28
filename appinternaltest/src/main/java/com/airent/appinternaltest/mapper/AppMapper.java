@@ -1,10 +1,7 @@
 package com.airent.appinternaltest.mapper;
 
 import com.airent.appinternaltest.bean.App;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -24,4 +21,7 @@ public interface AppMapper {
     @Insert("insert into app_(app_name,create_date,download_url,qr_path,md5_name) " +
             "values(#{appName},#{createDate},#{downloadUrl},#{qrPath},#{md5Name})")
     void insert(App app);
+
+    @Delete("delete from app_ where id = #{id}")
+    void delete(int id);
 }

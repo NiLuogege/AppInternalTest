@@ -24,4 +24,9 @@ public class AppServiceImpl implements AppService {
         if (null != app)
             appMapper.insert(app);
     }
+
+    @Override
+    public void delete(int id) {
+        appMapper.delete(id);
+    }
 }
