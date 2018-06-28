@@ -12,10 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.List;
 public class HomeController {
     @Autowired
     AppService appService;
+
 
     @RequestMapping("/home")
     public String home(Model m) throws Exception {
@@ -42,6 +44,59 @@ public class HomeController {
         return "upload";
     }
 
+
+    /**
+     * 下载文件
+     *
+     * @return
+     */
+    @RequestMapping("/download")
+    public void doDownload(HttpSession session, HttpServletResponse response,String md5Name) {
+        String fileName = md5Name+".app";
+        if (null != fileName) {
+            //文件存储路径
+            String appPath = session.getServletContext().getRealPath("/app");
+            File app = new File(appPath, fileName);
+            if (app.exists()) {
+                response.setContentType("application/force-download");//设置强制下载
+                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);//设置文件名
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(app);
+                    bis = new BufferedInputStream(fis);
+                    ServletOutputStream os = response.getOutputStream();
+                    int i = bis.read(buffer);
+                    while (i != -1) {
+                        os.write(buffer, 0, i);
+                        i = bis.read(buffer);
+                    }
+                    System.out.println("success");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     /**
      * 上传应用
      *
@@ -49,8 +104,6 @@ public class HomeController {
      */
     @RequestMapping("/doUpload")
     public String doUpload(HttpSession session, HttpServletRequest request) throws IOException {
-        App app = new App();
-        long startTime = System.currentTimeMillis();
 
         //获取存储app文件夹的路径
         String appPath = session.getServletContext().getRealPath("/app");
@@ -70,31 +123,29 @@ public class HomeController {
 
             Iterator<String> names = multiRequest.getFileNames();
 
-            while (names.hasNext()) {
+            if (names.hasNext()) {
                 MultipartFile file = multiRequest.getFile(names.next().toString());
                 if (file != null) {
+
+                    Date date = new Date();
                     String filename = file.getOriginalFilename();
-                    String hash = Md5Utils.hash(filename);
-                    app.setAppName(filename);
-                    app.setMd5Name(hash);
-                    File appFile = new File(appRootDir, filename);
+                    String Md5Name = Md5Utils.hash(filename + date.getTime());
+                    File appFile = new File(appRootDir, Md5Name);
                     file.transferTo(appFile);
+
+                    App app = new App();
+                    app.setAppName(filename);
+                    app.setMd5Name(Md5Name);
+                    app.setCreateDate(date);
+                    app.setDownloadUrl("app/" + app.getAppName());
+
+                    makeQRImage(app, appRootDir, request);
+
+                    appService.insert(app);
                 }
             }
         }
 
-
-        makeQRImage(app, appRootDir,request);
-
-        app.setCreateDate(new Date());
-        app.setDownloadUrl("app/" + app.getAppName());
-
-        appService.insert(app);
-
-        long endTime = System.currentTimeMillis();
-
-
-        System.out.println("上传时间：" + String.valueOf(endTime - startTime) + "ms");
         return "redirect:/home";
     }
 
@@ -122,10 +173,10 @@ public class HomeController {
 
                 String localName = request.getLocalAddr();
 
-                System.out.println("localName="+localName);
+                System.out.println("localName=" + localName);
 
-                File qr = new File(qrDirs, md5Name+".png");
-                String prPath = "http://"+localName+"/app/qr/" + appName;
+                File qr = new File(qrDirs, md5Name + ".png");
+                String prPath = "http://" + localName + "/app/qr/" + appName;
                 app.setQrPath(prPath);
                 QRCodeUtil.qrCodeEncode(prPath, qr);
             }
