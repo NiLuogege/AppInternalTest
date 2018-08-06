@@ -29,4 +29,9 @@ public class AppServiceImpl implements AppService {
     public void delete(int id) {
         appMapper.delete(id);
     }
+
+    @Override
+    public List<App> getAppByAppName(String appName) {
+        return appMapper.getAppByAppName(appName);
+    }
 }

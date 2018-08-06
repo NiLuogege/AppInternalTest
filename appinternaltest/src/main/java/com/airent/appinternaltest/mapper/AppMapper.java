@@ -23,4 +23,7 @@ public interface AppMapper {
 
     @Delete("delete from app_ where id = #{id}")
     void delete(int id);
+
+    @Select("select * from app_ where app_name = #{appName}")
+    List<App> getAppByAppName(String appName);
 }
