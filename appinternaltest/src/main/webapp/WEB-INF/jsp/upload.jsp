@@ -14,6 +14,11 @@
 //            $("#batchUploadBtn").attr('disabled', false);
             // 上传文件按钮点击的时候
             $("#batchUploadBtn").click(function () {
+                //判断是否选择文件
+                if (document.getElementById("batchFile").value == "") {
+                    alert("你没有选择文件");
+                    return false;
+                }
                 //进度条归0
                 $("#progressBar").width("0%");
                 //显示进度条
@@ -29,7 +34,7 @@
                 var fileObj = $("#batchFile").get(0).files[0]; // js 获取文件对象
 //                console.info("上传的文件：" + fileObj);
                 var FileController = "doUpload"; // 接收上传文件的后台地址
-                alert("上传的文件地址：" + FileController);
+//                alert("上传的文件地址：" + FileController);
                 // FormData 对象
                 var form = new FormData();
                 // form.append("author", "hooyes"); // 可以增加表单数据
@@ -61,6 +66,14 @@
 
 
         });
+
+        //        function check() {
+        //            if(document.getElementById("batchFile").value==""){
+        //                alert("你没有选择文件");
+        //                return false;
+        //            }
+        //            return true;
+        //        }
     </script>
 
 </head>
@@ -68,17 +81,18 @@
 <body>
 <div class="panel-body">
 
-    <%--<form id="uploadForm" action="doUpload" method="post" enctype="multipart/form-data" role="form">--%>
-    <%--<div class="form-group">--%>
-    <%--请选择app:<input id="selectApp" accept="application/vnd.android.package-archive" type="file" name="app"/>--%>
-    <%--</div>--%>
-    <%--<button type="submit" class="btn btn-info">开始上传</button>--%>
+    <div class="input-group" style="margin-top: 20px">
+        <span class="input-group-addon">请选择app:</span>
+        <input id="batchFile" class="form-control" accept="application/vnd.android.package-archive" type="file"
+               name="app"/>
+    </div>
 
-    <%--</form>--%>
 
-    请选择app:<input id="batchFile" accept="application/vnd.android.package-archive" type="file" name="app"/>
-    <button id="batchUploadBtn" type="submit" class="btn btn-info">开始上传</button>
-
+    <div class="text-center">
+        <button id="batchUploadBtn" style="margin-top: 50px;margin-bottom: 50px;padding-top: 20px;padding-bottom: 20px;
+padding-left: 40px;padding-right: 40px;font-size: 20px" type="submit" class="btn btn-info">开始上传
+        </button>
+    </div>
 
     <div class="progress progress-striped active" style="display: none">
         <div id="progressBar" class="progress-bar progress-bar-info"
