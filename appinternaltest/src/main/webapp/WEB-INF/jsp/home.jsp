@@ -8,11 +8,16 @@
     <script src="js/jquery/2.0.0/jquery.min.js"></script>
     <link href="css/bootstrap/3.3.6/bootstrap.css" rel="stylesheet"/>
     <script src="js/bootstrap/3.3.6/bootstrap.js"></script>
+    <style>
+        .table tbody tr td{
+            vertical-align: middle;
+        }
+    </style>
 </head>
 
 <body>
-<h1>APP内部测试</h1>
-<form action="upload" method="post">
+<h1 class="text-center" style="margin-top: 20px">享换机APP内部测试 </h1>
+<form class="text-center" style="margin-top: 30px;margin-bottom: 40px" action="upload" method="post">
     <button type="submit" class="btn btn-info btn-lg">
         <span class="glyphicon glyphicon-cloud-upload"></span>
         上传应用
@@ -20,14 +25,15 @@
 </form>
 
 <table class="table table-hover">
-    <tr>
+    <tr class="text-center">
         <td>名称</td>
         <td>上传日期</td>
         <td>下载地址</td>
         <td>二维码</td>
+        <td>删除</td>
     </tr>
     <c:forEach items="${apps}" var="app">
-        <tr>
+        <tr class="text-center">
             <td>${app.appName}</td>
             <td><fmt:formatDate value="${app.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
             <td><a href="/download?md5Name=${app.md5Name}">点击下载</a></td>
