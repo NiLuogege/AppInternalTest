@@ -50,6 +50,8 @@
                     $("#progressBar").parent().removeClass("active");
                     $("#progressBar").parent().hide();
                     //$('#myModal').modal('hide');
+
+                    window.location='/home'
                 };
                 xhr.upload.addEventListener("progress", progressFunction, false);
                 xhr.send(form);

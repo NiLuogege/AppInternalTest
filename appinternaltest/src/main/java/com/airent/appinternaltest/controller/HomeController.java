@@ -131,7 +131,7 @@ public class HomeController {
      * @return
      */
     @RequestMapping("/doUpload")
-    public String doUpload(HttpSession session, HttpServletRequest request) throws IOException {
+    public void doUpload(HttpSession session, HttpServletRequest request) throws IOException {
 //        System.out.println("浏览器发出请求时的完整URL，包括协议 主机名 端口(如果有): " + request.getRequestURL());
 //        System.out.println("浏览器发出请求的资源名部分，去掉了协议和主机名: " + request.getRequestURI());
 //        System.out.println("请求行中的参数部分: " + request.getQueryString());
@@ -167,28 +167,39 @@ public class HomeController {
                     Date date = new Date();
                     String filename = file.getOriginalFilename();
                     String Md5Name = Md5Utils.hash(filename + date.getTime());
-                    File appFile = new File(appRootDir, Md5Name);
-                    file.transferTo(appFile);
 
-                    App app = new App();
-                    app.setAppName(filename);
-                    app.setMd5Name(Md5Name);
-                    app.setCreateDate(date);
-                    String downloadUrl = "http://" + request.getLocalName() + ":" + erverPort + "/download?md5Name=" + Md5Name;
-                    app.setDownloadUrl(downloadUrl);
+                    List<App> appByAppName = appService.getAppByAppName(filename);
+                    if (appByAppName == null && appByAppName.size() == 0) {//没有上传过
+                        File appFile = new File(appRootDir, Md5Name);
+                        file.transferTo(appFile);
 
-                    makeQRImage(app, appRootDir);
+                        App app = new App();
+                        app.setAppName(filename);
+                        app.setMd5Name(Md5Name);
+                        app.setCreateDate(date);
+                        String downloadUrl = "http://" + request.getLocalName() + ":" + erverPort + "/download?md5Name=" + Md5Name;
+                        app.setDownloadUrl(downloadUrl);
 
-                    appService.insert(app);
+                        makeQRImage(app, appRootDir);
+
+                        appService.insert(app);
+
+//                        return "redirect:/home";
+                    } else {
+                        System.out.println("该资源已经被上传，如果必须上传请更改文件名");
+                        throw new RuntimeException("该资源已经被上传，如果必须上传请更改文件名");
+                    }
+
+
                 }
             } else {
-                new RuntimeException("没有选择上传资源");
+                throw new RuntimeException("没有选择上传资源");
             }
         } else {
-            new RuntimeException("没有选择上传资源");
+            throw new RuntimeException("没有选择上传资源");
         }
 
-        return "redirect:/home";
+//        return "";
     }
 
     /**
@@ -215,4 +226,6 @@ public class HomeController {
             }
         }
     }
+
+
 }
