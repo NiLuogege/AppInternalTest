@@ -76,9 +76,9 @@
                name="app"/>
     </div>
 
-    <div class="input-group">
+    <div class="input-group" style="margin-top: 20px">
         <span class="input-group-addon">请输入名称</span>
-        <input id="nickname" type="text" class="form-control" placeholder="twitterhandle">
+        <input id="nickname" type="text" class="form-control" placeholder="XHJ">
     </div>
 
 
