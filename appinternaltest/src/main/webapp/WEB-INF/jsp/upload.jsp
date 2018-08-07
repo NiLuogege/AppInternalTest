@@ -10,8 +10,6 @@
 
     <script>
         $(function () {
-//            // 上传按钮
-//            $("#batchUploadBtn").attr('disabled', false);
             // 上传文件按钮点击的时候
             $("#batchUploadBtn").click(function () {
                 //判断是否选择文件
@@ -32,26 +30,23 @@
 
             function UpladFile() {
                 var fileObj = $("#batchFile").get(0).files[0]; // js 获取文件对象
-//                console.info("上传的文件：" + fileObj);
                 var FileController = "doUpload"; // 接收上传文件的后台地址
-//                alert("上传的文件地址：" + FileController);
                 // FormData 对象
                 var form = new FormData();
-                // form.append("author", "hooyes"); // 可以增加表单数据
                 form.append("file", fileObj); // 文件对象
+                var nickname = $("#nickname").val();
+                form.append("nickname", nickname)
                 // XMLHttpRequest 对象
                 var xhr = new XMLHttpRequest();
                 xhr.open("post", FileController, true);
                 xhr.onload = function () {
-                    // ShowSuccess("上传完成");
                     alert("上传完成");
                     $("#batchUploadBtn").attr('disabled', false);
                     $("#batchUploadBtn").val("上传");
                     $("#progressBar").parent().removeClass("active");
                     $("#progressBar").parent().hide();
-                    //$('#myModal').modal('hide');
 
-                    window.location='/home'
+                    window.location = '/home'
                 };
                 xhr.upload.addEventListener("progress", progressFunction, false);
                 xhr.send(form);
@@ -68,14 +63,6 @@
 
 
         });
-
-        //        function check() {
-        //            if(document.getElementById("batchFile").value==""){
-        //                alert("你没有选择文件");
-        //                return false;
-        //            }
-        //            return true;
-        //        }
     </script>
 
 </head>
@@ -87,6 +74,11 @@
         <span class="input-group-addon">请选择app:</span>
         <input id="batchFile" class="form-control" accept="application/vnd.android.package-archive" type="file"
                name="app"/>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon">请输入名称</span>
+        <input id="nickname" type="text" class="form-control" placeholder="twitterhandle">
     </div>
 
 

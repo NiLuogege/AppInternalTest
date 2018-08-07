@@ -34,7 +34,7 @@
     </tr>
     <c:forEach items="${apps}" var="app">
         <tr class="text-center">
-            <td>${app.appName}</td>
+            <td>${app.nickname}</td>
             <td><fmt:formatDate value="${app.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
             <td><a href="/download?md5Name=${app.md5Name}">点击下载</a></td>
             <td><img src="app/qr/${app.md5Name}.png"></td>

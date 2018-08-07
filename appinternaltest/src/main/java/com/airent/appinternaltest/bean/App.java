@@ -6,9 +6,17 @@ public class App {
     private int id;
     private String appName;
     private String md5Name;
+    private String nickname;
     private Date createDate;
     private String downloadUrl;
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     public String getMd5Name() {
         return md5Name;
