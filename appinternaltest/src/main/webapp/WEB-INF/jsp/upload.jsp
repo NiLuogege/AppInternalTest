@@ -46,7 +46,7 @@
                     $("#progressBar").parent().removeClass("active");
                     $("#progressBar").parent().hide();
 
-                    window.location = '/home'
+                    window.location = GetUrlPath()+'/home'
                 };
                 xhr.upload.addEventListener("progress", progressFunction, false);
                 xhr.send(form);
@@ -60,6 +60,20 @@
                     $("#batchUploadBtn").val("正在上传 " + completePercent);
                 }
             };
+
+            /**
+             * 当前页面所在目录路径
+             * 当前页面地址：http://www.abc.com/shop/page.php?id=123&s=142231233
+             * 结果：http://www.abc.com/shop
+             */
+            function GetUrlPath() {
+                var url = document.location.toString();
+                if (url.indexOf("/") != -1) {
+                    url = url.substring(0, url.lastIndexOf("/"));
+                }
+                return url;
+
+            }
 
 
         });
