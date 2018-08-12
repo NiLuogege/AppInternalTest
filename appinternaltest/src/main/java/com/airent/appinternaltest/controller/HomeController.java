@@ -181,7 +181,7 @@ public class HomeController {
                     } else {
                         app.setNickname(nickname);
                     }
-                    String downloadUrl = "http://" + request.getLocalName() + ":" + erverPort + "/download?md5Name=" + Md5Name;
+                    String downloadUrl = "http://" + request.getLocalName() + ":" + erverPort + "/app/download?md5Name=" + Md5Name;
                     app.setDownloadUrl(downloadUrl);
 
                     makeQRImage(app, appRootDir);

@@ -77,10 +77,8 @@
         <!--二维码jar包-->
         <dependency>
             <groupId>com.airent.qrcode</groupId>
-            <artifactId>qrcode</artifactId>
+            <artifactId>QRCode</artifactId>
             <version>0.0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/qrcode.jar</systemPath>
         </dependency>
         <!--jsp-->
         <!-- servlet 依赖 -->
