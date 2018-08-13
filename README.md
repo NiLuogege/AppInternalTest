@@ -28,6 +28,9 @@ spring.datasource.password = root
 
 3. 导出war包然后上传到服务器上
 
+### 注意：
+1.要將QRcode.jar 大如war包，QRcode.jar在項目的根路徑
+
 
 
 ## 为啥要做这个东西？
