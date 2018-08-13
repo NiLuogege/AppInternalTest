@@ -23,6 +23,6 @@ public class UploadProgressListener implements ProgressListener {
         status.setpBytesRead(pBytesRead);
         status.setpContentLength(pContentLength);
         status.setpItems(pItems);
-        System.out.println(status.toString());
+//        System.out.println(status.toString());
     }
 }
