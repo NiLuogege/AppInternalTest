@@ -58,11 +58,13 @@ public class HomeController {
         File appRootDir = new File(appPath);
         if (appRootDir.exists()) {
             File appFile = new File(appRootDir, app.getMd5Name());
+            System.out.println("app:"+appFile.getAbsolutePath()+" exists="+appFile.exists());
             if (appFile.exists()) {
                 appFile.delete();
             }
 
             File qrDirs = new File(appRootDir, "qr");
+            System.out.println("png:"+qrDirs.getAbsolutePath()+" exists="+qrDirs.exists());
             if (qrDirs.exists()) {
                 File qr = new File(qrDirs, app.getMd5Name() + ".png");
                 qr.delete();
