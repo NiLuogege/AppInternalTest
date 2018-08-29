@@ -25,6 +25,9 @@ public interface AppMapper {
     @Delete("delete from app_ where id = #{id}")
     void delete(int id);
 
+    @Update("update app_ set nickname = #{nickname} where id = #{id}")
+    void update(App app);
+
     @Select("select * from app_ where app_name = #{appName}")
     List<App> getAppByAppName(String appName);
 }

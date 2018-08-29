@@ -8,5 +8,6 @@ public interface AppService {
     List<App> getAll();
     void insert(App app);
     void delete(int id);
+    void update(App app);
     List<App> getAppByAppName(String appName);
 }

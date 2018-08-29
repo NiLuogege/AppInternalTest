@@ -31,6 +31,7 @@
         <td>下载地址</td>
         <td>二维码</td>
         <td>删除</td>
+        <td>修改</td>
     </tr>
     <c:forEach items="${apps}" var="app">
         <tr class="text-center">
@@ -39,6 +40,7 @@
             <td><a href="/app/download?md5Name=${app.md5Name}">点击下载</a></td>
             <td><img src="app/qr/${app.md5Name}.png"></td>
             <td><a href="/app/delete?id=${app.id}&md5Name=${app.md5Name}">点击删除</a></td>
+            <td><a href="/app/update?id=${app.id}&appName=${app.nickname}">修改</a></td>
         </tr>
     </c:forEach>
 

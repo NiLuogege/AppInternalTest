@@ -39,6 +39,32 @@ public class HomeController {
         return "home";
     }
 
+
+    /**
+     * 去修改页面
+     *
+     * @param app
+     * @return
+     */
+    @RequestMapping("/update")
+    public String update(Model m, App app) {
+        m.addAttribute("app", app);
+        return "update";
+    }
+
+
+    /**
+     * 修改
+     *
+     * @param app
+     * @return
+     */
+    @RequestMapping("/doUpdate")
+    public String doUpdate(App app) {
+        appService.update(app);
+        return "redirect:/home";
+    }
+
     /**
      * 上传应用页面
      *
@@ -58,13 +84,13 @@ public class HomeController {
         File appRootDir = new File(appPath);
         if (appRootDir.exists()) {
             File appFile = new File(appRootDir, app.getMd5Name());
-            System.out.println("app:"+appFile.getAbsolutePath()+" exists="+appFile.exists());
+            System.out.println("app:" + appFile.getAbsolutePath() + " exists=" + appFile.exists());
             if (appFile.exists()) {
                 appFile.delete();
             }
 
             File qrDirs = new File(appRootDir, "qr");
-            System.out.println("png:"+qrDirs.getAbsolutePath()+" exists="+qrDirs.exists());
+            System.out.println("png:" + qrDirs.getAbsolutePath() + " exists=" + qrDirs.exists());
             if (qrDirs.exists()) {
                 File qr = new File(qrDirs, app.getMd5Name() + ".png");
                 qr.delete();

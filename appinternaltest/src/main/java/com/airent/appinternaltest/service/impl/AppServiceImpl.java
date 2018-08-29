@@ -31,6 +31,11 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
+    public void update(App app) {
+        appMapper.update(app);
+    }
+
+    @Override
     public List<App> getAppByAppName(String appName) {
         return appMapper.getAppByAppName(appName);
     }
