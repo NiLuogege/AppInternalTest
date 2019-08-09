@@ -58,7 +58,11 @@ public class ChannelApkController {
 
 
             //zip对齐
-            String zipalign = channelPath + File.separator + "zipalign -v 4 " + jiaguNosignApkPath + jiaguZipalignApkPath;
+            String zipalignTool = channelPath + File.separator + "zipalign";
+            if (!isWin()) {
+                zipalignTool = channelPath + File.separator + "build_tools_linux_26.0.2" + File.separator + "zipalign";
+            }
+            String zipalign = zipalignTool + " -v 4 " + jiaguNosignApkPath + jiaguZipalignApkPath;
             String zipalignResult = CmdUtils.execCmd(zipalign, false);
             System.out.println("channel--> zipalignResult--> " + zipalignResult);
 
@@ -87,6 +91,17 @@ public class ChannelApkController {
         } else {
             throw new RuntimeException("渠道号为空");
         }
+    }
+
+    /**
+     * 是 win 还是 linux
+     *
+     * @return
+     */
+    private boolean isWin() {
+        String os = System.getProperty("os.name");
+        System.out.println("os= " + os);
+        return os.toLowerCase().startsWith("win");
     }
 
 
