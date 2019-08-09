@@ -55,7 +55,7 @@
         <h3 class="panel-title">操作指北</h3>
     </div>
     <div class="panel-body text-left text-primary">
-       生成渠道包<br>
+        生成渠道包<br>
         读取渠道包信息<br>
         逗号分隔","<br>
         这是一个基本的面板<br>
@@ -64,6 +64,17 @@
         这是一个基本的面板<br>
 
     </div>
+</div>
+
+
+<div class="container">
+
+    <h4 style="color: #3c763d;">当前支持生成渠道包的版本</h4>
+
+
+    <font style="color: #3c763d;margin-left: 20px">当前选中: </font>
+    <font style="color: #ff0000;">v3.3.3</font>
+
 </div>
 
 
