@@ -45,11 +45,10 @@
     </form>
 </div>
 
-<form class="text-center" style="margin-top: 30px;margin-bottom: 40px" action="startChannelApk" method="post">
+<div class="text-center">
+    <a href="/app/startChannelApk" class="btn btn-success btn-lg">点击下载</a>
+</div>
 
-    <button type="submit" class="btn btn-success  btn-lg">开始生成</button>
-
-</form>
 
 </body>
 </html>

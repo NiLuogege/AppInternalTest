@@ -4,6 +4,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 @Controller
 public class ChannelApkController {
 
@@ -14,7 +17,7 @@ public class ChannelApkController {
 
 
     @RequestMapping("/startChannelApk")
-    public void startChannelApk(Model model) throws Exception {
+    public void startChannelApk(HttpSession session, HttpServletResponse response, String md5Name) throws Exception {
         System.out.println("开始我bavbaole");
     }
 }
