@@ -8,9 +8,13 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 @Controller
 public class ChannelApkController {
@@ -77,12 +81,14 @@ public class ChannelApkController {
             System.out.println("channel--> writeResult--> " + writeResult);
 
 
-            String imageZipPath = tempDir + File.separator + version + "_channle.zip";
+            String zipName = version + "_channle.zip";
+            String zipPath = tempDir + File.separator + zipName;
             File[] files = channelDir.listFiles();
-            boolean zipSuccess = ZipUtils.zipFiles(files, imageZipPath);
+            boolean zipSuccess = ZipUtils.zipFiles(files, zipPath);
             if (zipSuccess) {
                 System.out.println("channel--> 压缩成功");
 
+                downloadZip(response, zipPath, zipName);
 
             } else {
                 throw new RuntimeException("压缩失败");
@@ -90,6 +96,47 @@ public class ChannelApkController {
 
         } else {
             throw new RuntimeException("渠道号为空");
+        }
+    }
+
+
+    private void downloadZip(HttpServletResponse response, String zipPath, String fileName) {
+        File zip = new File(zipPath);
+        if (zip.exists()) {
+            response.setContentType("application/force-download");//设置强制下载
+            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);//设置文件名
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            try {
+                fis = new FileInputStream(zip);
+                bis = new BufferedInputStream(fis);
+                ServletOutputStream os = response.getOutputStream();
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer, 0, i);
+                    i = bis.read(buffer);
+                }
+                System.out.println("channel--> 下载成功");
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
