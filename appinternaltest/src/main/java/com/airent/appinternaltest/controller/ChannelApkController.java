@@ -75,6 +75,13 @@ public class ChannelApkController {
             String signResult = CmdUtils.execCmd(sign, true);
             System.out.println("channel--> signResult--> " + signResult);
 
+
+            //校验签名结果
+            String checkSign = "java -jar " + channelPath + File.separator + "CheckAndroidSignature.jar " + jiaguSignApkPath;
+            String checkSignResult = CmdUtils.execCmd(checkSign, true);
+            System.out.println("channel--> checkSignResult--> " + checkSignResult);
+
+
             //打渠道包
             String writeChannel = "java -jar " + channelPath + File.separator + "walle.jar batch -c meituan,meituan2,meituan3 " + jiaguSignApkPath + " " + channelDir.getAbsolutePath();
             String writeResult = CmdUtils.execCmd(writeChannel, true);
@@ -89,6 +96,10 @@ public class ChannelApkController {
                 System.out.println("channel--> 压缩成功");
 
                 downloadZip(response, zipPath, zipName);
+
+                //下载完成后删除临时文件
+                deleteFile(tempDir);
+                System.out.println("channel--> 删除成功");
 
             } else {
                 throw new RuntimeException("压缩失败");
@@ -149,6 +160,23 @@ public class ChannelApkController {
         String os = System.getProperty("os.name");
         System.out.println("os= " + os);
         return os.toLowerCase().startsWith("win");
+    }
+
+    /**
+     * 递归删除文件
+     *
+     * @param f
+     */
+    public static void deleteFile(File f) {
+        File[] b = f.listFiles();//获取包含file对象对应的子目录或者文件
+        for (int i = 0; i < b.length; i++) {
+            if (b[i].isFile()) {//判断是否为文件
+                b[i].delete();//如果是就删除
+            } else {
+                deleteFile(b[i]);//否则重新递归到方法中
+            }
+        }
+        f.delete();//最后删除该目录中所有文件后就删除该目录
     }
 
 
