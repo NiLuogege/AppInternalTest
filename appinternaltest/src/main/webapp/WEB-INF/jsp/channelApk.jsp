@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
@@ -21,12 +23,20 @@
 
                 //判断是否选择文件
                 var channels = $("#channelContanner").val();
+                var vers = $('#selectVersion').text();
 
                 if (channels == "") {
-                    alert("你没有channel");
+                    alert("你没有channel=");
                     return false;
                 }
-                window.location = GetUrlPath() + "/startChannelApk?channels=" + channels
+
+
+                if (vers == "") {
+                    alert("vers为空");
+                    return false;
+                }
+
+                window.location = GetUrlPath() + "/startChannelApk?channels=" + channels + "&version=" + vers
             })
 
             /**
@@ -42,7 +52,14 @@
                 return url;
 
             }
+
+
+            $('#vC button').on('click', function () {
+                $('#selectVersion').text($(this).text())
+            })
+
         });
+
     </script>
 </head>
 <body>
@@ -55,13 +72,12 @@
         <h3 class="panel-title">操作指北</h3>
     </div>
     <div class="panel-body text-left text-primary">
-        生成渠道包<br>
-        读取渠道包信息<br>
-        逗号分隔","<br>
-        这是一个基本的面板<br>
-        这是一个基本的面板<br>
-        这是一个基本的面板<br>
-        这是一个基本的面板<br>
+        1. 选择要生成渠道包的版本<br>
+        2. 输入渠道号使用---逗号","分隔<br>
+        3. 点击最下面的“开始生成”按钮<br>
+        4. 进行等待 系统会自动进行操作并下载<br>
+        5. 解压自动下载的压缩包<br>
+        6. ***希望在使用前安装一下渠道包保证可以正常使用在进行投放***<br>
 
     </div>
 </div>
@@ -69,11 +85,24 @@
 
 <div class="container">
 
-    <h4 style="color: #3c763d;">当前支持生成渠道包的版本</h4>
+    <h4 style="color: #3c763d;">当前支持生成渠道包的版本(点击更换)</h4>
 
+    <div id="vC" style="background: #f8f8f8;width: 240px;padding: 15px">
+        <c:forEach items="${versions}" var="version" varStatus="status">
 
-    <font style="color: #3c763d;margin-left: 20px">当前选中: </font>
-    <font style="color: #ff0000;">v3.3.3</font>
+            <button type="button" class="btn btn-default" style="color: #337ab7;">V ${version}</button>
+            <br>
+
+        </c:forEach>
+    </div>
+
+</div>
+
+<div class="container" style="margin-top: 20px">
+
+    <h4 style="color: #3c763d;">当前选中版本</h4>
+
+    <h4 id="selectVersion" style="color: #ff0000;">V ${versions[1]}</h4>
 
 </div>
 

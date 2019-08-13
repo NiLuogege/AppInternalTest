@@ -15,12 +15,44 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Controller
 public class ChannelApkController {
 
     @RequestMapping("/channel")
-    public String channelApk(Model model) throws Exception {
+    public String channelApk(HttpSession session, Model model) throws Exception {
+
+        String channelPath = session.getServletContext().getRealPath("/channle");
+        File channleFile = new File(channelPath);
+        ArrayList<String> versions = new ArrayList<>();
+        if (channleFile.exists() && channleFile.isDirectory()) {
+            File rootApkDir = new File(channleFile, "rootApk");
+            if (rootApkDir.exists() && rootApkDir.isDirectory()) {
+                File[] apks = rootApkDir.listFiles();
+                if (apks != null && apks.length > 0) {
+                    for (int i = 0; i < apks.length; i++) {
+                        File apk = apks[i];
+                        if (apk != null) {
+                            String name = apk.getName();
+                            if (!StringUtils.isEmpty(name)) {
+                                String lowerCaseName = name.toLowerCase();
+                                String[] split = lowerCaseName.split("_");
+                                if (split.length > 3) {
+                                    String version = split[1];
+                                    String versionNum = version.substring(1, version.length());
+                                    versions.add(versionNum);
+                                } else {
+                                    throw new RuntimeException("rootApk命名不规范");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        model.addAttribute("versions", versions);
         return "channelApk";
     }
 
@@ -30,83 +62,85 @@ public class ChannelApkController {
      * @param channels 批量写入是需逗号","分隔
      */
     @RequestMapping("/startChannelApk")
-    public void startChannelApk(HttpSession session, HttpServletResponse response, String channels) throws Exception {
-        System.out.println("channels= " + channels);
+    public void startChannelApk(HttpSession session, HttpServletResponse response, String channels, String version) throws Exception {
+        if (!StringUtils.isEmpty(version)) {
+            version = version.split(" ")[1].trim();
 
-        String version = "3.3.3";
+            System.out.println("channels= " + channels + " version= " + version);
 
-        if (!StringUtils.isEmpty(channels)) {
-            String channelPath = session.getServletContext().getRealPath("/channle");
+            if (!StringUtils.isEmpty(channels)) {
+                String channelPath = session.getServletContext().getRealPath("/channle");
 
-            //创建临时文件夹
-            File tempDir = new File(channelPath, "tempDir");
-            if (!tempDir.exists() || tempDir.isFile()) {
-                tempDir.mkdirs();
-            }
+                //创建临时文件夹
+                File tempDir = new File(channelPath, "tempDir");
+                if (!tempDir.exists() || tempDir.isFile()) {
+                    tempDir.mkdirs();
+                }
 
-            //渠道包存储路径
-            File channelDir = new File(tempDir, version + "_channle");
-            if (!channelDir.exists() || channelDir.isFile()) {
-                channelDir.mkdirs();
-            }
-
-
-            //加固 没签名的apk路径
-            String jiaguNosignApkPath = channelPath + File.separator + "rootApk" + File.separator + "XHJ_V3.3.3_jiagu_nosign.apk ";
-            //对齐后的apk路径
-            String jiaguZipalignApkPath = tempDir + File.separator + "3.3.3_jiagu_zipalign.apk";
-            //加固签名后的apk路径
-            String jiaguSignApkPath = tempDir + File.separator + "3.3.3_jiagu_sign.apk";
-            //签名文件
-            String keyFilePath = channelPath + File.separator + "observer_app.keystore";
+                //渠道包存储路径
+                File channelDir = new File(tempDir, version + "_channle");
+                if (!channelDir.exists() || channelDir.isFile()) {
+                    channelDir.mkdirs();
+                }
 
 
-            //zip对齐
-            String zipalignTool = channelPath + File.separator + "zipalign";
-            if (!isWin()) {
-                zipalignTool = channelPath + File.separator + "build_tools_linux_26.0.2" + File.separator + "zipalign";
-            }
-            String zipalign = zipalignTool + " -v 4 " + jiaguNosignApkPath + jiaguZipalignApkPath;
-            String zipalignResult = CmdUtils.execCmd(zipalign, false);
-            System.out.println("channel--> zipalignResult--> " + zipalignResult);
-
-            //签名
-            String sign = "java -jar " + channelPath + File.separator + "apksigner.jar sign --ks " + keyFilePath + " --ks-pass pass:Aihuishou99 --key-pass pass:Aihuishou99 --out " + jiaguSignApkPath + " " + jiaguZipalignApkPath;
-            String signResult = CmdUtils.execCmd(sign, true);
-            System.out.println("channel--> signResult--> " + signResult);
+                //加固 没签名的apk路径
+                String jiaguNosignApkPath = channelPath + File.separator + "rootApk" + File.separator + "XHJ_V" + version + "_jiagu_nosign.apk ";
+                //对齐后的apk路径
+                String jiaguZipalignApkPath = tempDir + File.separator + version + "_jiagu_zipalign.apk";
+                //加固签名后的apk路径
+                String jiaguSignApkPath = tempDir + File.separator + version + "_jiagu_sign.apk";
+                //签名文件
+                String keyFilePath = channelPath + File.separator + "observer_app.keystore";
 
 
-            //校验签名结果
-            String checkSign = "java -jar " + channelPath + File.separator + "CheckAndroidSignature.jar " + jiaguSignApkPath;
-            String checkSignResult = CmdUtils.execCmd(checkSign, true);
-            System.out.println("channel--> checkSignResult--> " + checkSignResult);
+                //zip对齐
+                String zipalignTool = channelPath + File.separator + "zipalign";
+                if (!isWin()) {
+                    zipalignTool = channelPath + File.separator + "build_tools_linux_26.0.2" + File.separator + "zipalign";
+                }
+                String zipalign = zipalignTool + " -v 4 " + jiaguNosignApkPath + jiaguZipalignApkPath;
+                String zipalignResult = CmdUtils.execCmd(zipalign, false);
+                System.out.println("channel--> zipalignResult--> " + zipalignResult);
+
+                //签名
+                String sign = "java -jar " + channelPath + File.separator + "apksigner.jar sign --ks " + keyFilePath + " --ks-pass pass:Aihuishou99 --key-pass pass:Aihuishou99 --out " + jiaguSignApkPath + " " + jiaguZipalignApkPath;
+                String signResult = CmdUtils.execCmd(sign, true);
+                System.out.println("channel--> signResult--> " + signResult);
 
 
-            //打渠道包
-            String writeChannel = "java -jar " + channelPath + File.separator + "walle.jar batch -c meituan,meituan2,meituan3 " + jiaguSignApkPath + " " + channelDir.getAbsolutePath();
-            String writeResult = CmdUtils.execCmd(writeChannel, true);
-            System.out.println("channel--> writeResult--> " + writeResult);
+                //校验签名结果
+                String checkSign = "java -jar " + channelPath + File.separator + "CheckAndroidSignature.jar " + jiaguSignApkPath;
+                String checkSignResult = CmdUtils.execCmd(checkSign, true);
+                System.out.println("channel--> checkSignResult--> " + checkSignResult);
 
 
-            String zipName = version + "_channle.zip";
-            String zipPath = tempDir + File.separator + zipName;
-            File[] files = channelDir.listFiles();
-            boolean zipSuccess = ZipUtils.zipFiles(files, zipPath);
-            if (zipSuccess) {
-                System.out.println("channel--> 压缩成功");
+                //打渠道包
+                String writeChannel = "java -jar " + channelPath + File.separator + "walle.jar batch -c " + channels + " " + jiaguSignApkPath + " " + channelDir.getAbsolutePath();
+                String writeResult = CmdUtils.execCmd(writeChannel, true);
+                System.out.println("channel--> writeResult--> " + writeResult);
 
-                downloadZip(response, zipPath, zipName);
 
-                //下载完成后删除临时文件
-                deleteFile(tempDir);
-                System.out.println("channel--> 删除成功");
+                String zipName = version + "_channle.zip";
+                String zipPath = tempDir + File.separator + zipName;
+                File[] files = channelDir.listFiles();
+                boolean zipSuccess = ZipUtils.zipFiles(files, zipPath);
+                if (zipSuccess) {
+                    System.out.println("channel--> 压缩成功");
+
+                    downloadZip(response, zipPath, zipName);
+
+                    //下载完成后删除临时文件
+                    deleteFile(tempDir);
+                    System.out.println("channel--> 删除成功");
+
+                } else {
+                    throw new RuntimeException("压缩失败");
+                }
 
             } else {
-                throw new RuntimeException("压缩失败");
+                throw new RuntimeException("渠道号为空");
             }
-
-        } else {
-            throw new RuntimeException("渠道号为空");
         }
     }
 
