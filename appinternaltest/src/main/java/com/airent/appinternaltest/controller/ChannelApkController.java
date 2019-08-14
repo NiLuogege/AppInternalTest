@@ -1,18 +1,27 @@
 package com.airent.appinternaltest.controller;
 
+import com.airent.appinternaltest.bean.App;
 import com.airent.appinternaltest.utils.CmdUtils;
 import com.airent.appinternaltest.utils.JsonUtil;
+import com.airent.appinternaltest.utils.Md5Utils;
 import com.airent.appinternaltest.utils.ZipUtils;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Controller
@@ -20,19 +29,10 @@ public class ChannelApkController {
 
 
     @RequestMapping("/lookChannle")
-    public String lookChannles(HttpSession session, Model model) throws Exception {
-        String channelPath = session.getServletContext().getRealPath("/channle");
-        File channleDir = new File(channelPath);
-        if (channleDir.exists() && channleDir.isDirectory()) {
+    public String lookChannles(HttpSession session, Model model, String result) throws Exception {
+        System.out.println("及那俩了result=" + result);
 
-            File channleFile = new File(channleDir, "channel");
-            if (!channleFile.exists() || channleFile.isDirectory()) {
-                channleFile.createNewFile();
-            }
-
-            List<String> channels = getChannelsToFile(channleFile);
-            model.addAttribute("channels", JsonUtil.listToJson(channels));
-        }
+        model.addAttribute("result", "6666");
 
         return "lookChannle";
     }
@@ -187,6 +187,63 @@ public class ChannelApkController {
                 throw new RuntimeException("渠道号为空");
             }
         }
+    }
+
+
+    /**
+     * 上传应用
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/uploadChannelApk")
+    public JSONObject doUpload(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        String result = "";
+
+        String channelPath = session.getServletContext().getRealPath("/channle");
+
+        //创建临时文件夹
+        File tempDir = new File(channelPath, "tempDir");
+        if (!tempDir.exists() || tempDir.isFile()) {
+            tempDir.mkdirs();
+        }
+
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+
+        if (multipartResolver.isMultipart(request)) {
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+
+            Iterator<String> names = multiRequest.getFileNames();
+
+            if (names.hasNext()) {
+                MultipartFile file = multiRequest.getFile(names.next().toString());
+                if (file != null) {
+                    File appFile = new File(tempDir, "channel.apk");
+                    file.transferTo(appFile);
+
+
+                    //打渠道包
+                    String readChannel = "java -jar " + channelPath + File.separator + "walle.jar show " + appFile.getAbsolutePath();
+                    String readResult = CmdUtils.execCmd(readChannel, true);
+                    System.out.println("channel--> readResult--> " + readResult);
+
+                    result = readResult.replace(appFile.getAbsolutePath(), "");
+
+                    //删除临时文件
+                    deleteFile(tempDir);
+                }
+            } else {
+                throw new RuntimeException("没有选择上传资源");
+            }
+        } else {
+            throw new RuntimeException("没有选择上传资源");
+        }
+
+
+        JSONObject object = new JSONObject();
+        object.put("result", 777);
+        return object;
     }
 
 
