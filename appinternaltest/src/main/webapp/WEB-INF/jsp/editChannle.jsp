@@ -1,4 +1,4 @@
-<%--
+<%@ page import="java.util.ArrayList" %><%--
   Created by IntelliJ IDEA.
   User: niluogege
   Date: 2019/8/14
@@ -15,10 +15,49 @@
 
     <title>编辑发版渠道配置</title>
 
+    <script>
+
+        $("#okBtn").click(function () {
+            var r = confirm("确认进行保存吗");
+            if (r == true) {
+//                $('#channelContanner').val();
+            }
+
+        })
+
+        $(document).ready(function () {
+
+            var list = ${channels};
+            var channelStr = ''
+            $(list).each(function (i, channel) {
+                channelStr += channel + "\r\n"
+            });
+            $('#channelContanner').val(channelStr);
+        });
+
+
+    </script>
+
 </head>
 <body>
 
-<button type="button" class="btn btn-default">默认按钮</button>
+<h2 class="text-center" style="margin-top: 20px">该页面内容会用于下次发版打渠道包使用，请认真对待！！！</h2>
+
+
+<div class="container" style="margin-top: 20px">
+
+    <form role="form">
+        <div class="form-group">
+            <h4 style="color: #3c763d;">请增加或者删除渠道号并点击确定按钮保存</h4>
+            <textarea id="channelContanner" class="form-control"
+                      style="margin-top: 15px;height: 90%"></textarea>
+        </div>
+    </form>
+</div>
+
+<div class="text-center" style="margin-bottom: 20px">
+    <button id="okBtn" type="submit" class="btn btn-success btn-lg">保存</button>
+</div>
 
 </body>
 </html>

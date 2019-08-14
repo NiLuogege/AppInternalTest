@@ -1,6 +1,7 @@
 package com.airent.appinternaltest.controller;
 
 import com.airent.appinternaltest.utils.CmdUtils;
+import com.airent.appinternaltest.utils.JsonUtil;
 import com.airent.appinternaltest.utils.ZipUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +31,7 @@ public class ChannelApkController {
             }
 
             List<String> channels = getChannelsToFile(channleFile);
-            model.addAttribute("channels", channels);
+            model.addAttribute("channels", JsonUtil.listToJson(channels));
         }
 
         return "lookChannle";
@@ -50,7 +51,7 @@ public class ChannelApkController {
             }
 
             List<String> channels = getChannelsToFile(channleFile);
-            model.addAttribute("channels", channels);
+            model.addAttribute("channels", JsonUtil.listToJson(channels));
         }
 
         return "editChannle";
