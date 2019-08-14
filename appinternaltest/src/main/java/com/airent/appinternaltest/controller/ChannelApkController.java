@@ -18,7 +18,7 @@ import java.util.List;
 public class ChannelApkController {
 
 
-    @RequestMapping("/lookChannles")
+    @RequestMapping("/lookChannle")
     public String lookChannles(HttpSession session, Model model) throws Exception {
         String channelPath = session.getServletContext().getRealPath("/channle");
         File channleDir = new File(channelPath);
@@ -33,12 +33,13 @@ public class ChannelApkController {
             model.addAttribute("channels", channels);
         }
 
-        return "lookChannles";
+        return "lookChannle";
     }
 
 
     @RequestMapping("/editChannelFile")
     public String editChannelFile(HttpSession session, Model model) throws Exception {
+
         String channelPath = session.getServletContext().getRealPath("/channle");
         File channleDir = new File(channelPath);
         if (channleDir.exists() && channleDir.isDirectory()) {

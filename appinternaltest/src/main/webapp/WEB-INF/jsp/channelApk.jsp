@@ -59,11 +59,13 @@
             })
 
 
-            $('#lookChannles button').on('click', function () {
-                window.location = GetUrlPath() + "/lookChannles"
+
+            $("#lookChannles").click(function () {
+                window.location = GetUrlPath() + "/lookChannle"
             })
 
-            $('#editChannelFile button').on('click', function () {
+
+            $("#editChannelFile").click(function () {
                 window.location = GetUrlPath() + "/editChannelFile"
             })
 
@@ -99,7 +101,7 @@
         </button>
 
         <button id="editChannelFile" type="button" class="btn btn-info" style=" margin-top: 10px">
-           编辑发版渠道配置
+           编辑发版渠道配置-->
         </button>
 
     </div>

@@ -13,11 +13,12 @@
     <script src="js/bootstrap/3.3.6/bootstrap.js"></script>
 
 
-
     <title>编辑发版渠道配置</title>
 
 </head>
 <body>
+
+<button type="button" class="btn btn-default">默认按钮</button>
 
 </body>
 </html>
