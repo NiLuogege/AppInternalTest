@@ -102,7 +102,7 @@
 
     <h4 style="color: #3c763d;">当前选中版本</h4>
 
-    <h4 id="selectVersion" style="color: #ff0000;">V ${versions[1]}</h4>
+    <h4 id="selectVersion" style="color: #ff0000;">V ${versions[versions.size()-1]}</h4>
 
 </div>
 
