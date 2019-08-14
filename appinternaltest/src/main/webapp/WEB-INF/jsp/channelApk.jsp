@@ -58,6 +58,15 @@
                 $('#selectVersion').text($(this).text())
             })
 
+
+            $('#lookChannles button').on('click', function () {
+                window.location = GetUrlPath() + "/lookChannles"
+            })
+
+            $('#editChannelFile button').on('click', function () {
+                window.location = GetUrlPath() + "/editChannelFile"
+            })
+
         });
 
     </script>
@@ -66,22 +75,36 @@
 
 <h1 class="text-center" style="margin-top: 20px">自动生成渠道包</h1>
 
+<div>
 
-<div class="panel panel-success" style="max-width: 30%;margin-left: 10px">
-    <div class="panel-heading">
-        <h3 class="panel-title">操作指北</h3>
+    <div class="panel panel-success" style="max-width: 30%;margin-left: 10px">
+        <div class="panel-heading">
+            <h3 class="panel-title">操作指北</h3>
+        </div>
+        <div class="panel-body text-left text-primary">
+            1. 选择要生成渠道包的版本<br>
+            2. 输入渠道号使用---逗号","分隔<br>
+            3. 点击最下面的“开始生成”按钮<br>
+            4. 进行等待 系统会自动进行操作并下载<br>
+            5. 解压自动下载的压缩包<br>
+            6. ***希望在使用前安装一下渠道包保证可以正常使用在进行投放***<br>
+
+        </div>
     </div>
-    <div class="panel-body text-left text-primary">
-        1. 选择要生成渠道包的版本<br>
-        2. 输入渠道号使用---逗号","分隔<br>
-        3. 点击最下面的“开始生成”按钮<br>
-        4. 进行等待 系统会自动进行操作并下载<br>
-        5. 解压自动下载的压缩包<br>
-        6. ***希望在使用前安装一下渠道包保证可以正常使用在进行投放***<br>
+
+    <div style="width: 240px;position: absolute;top: 80px;left: 85%">
+
+        <button id="lookChannles" type="button" class="btn btn-info">
+            查看apk渠道号-->
+        </button>
+
+        <button id="editChannelFile" type="button" class="btn btn-info" style=" margin-top: 10px">
+           编辑发版渠道配置
+        </button>
 
     </div>
+
 </div>
-
 
 <div class="container">
 

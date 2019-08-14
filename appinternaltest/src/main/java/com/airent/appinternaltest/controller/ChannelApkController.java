@@ -2,7 +2,6 @@ package com.airent.appinternaltest.controller;
 
 import com.airent.appinternaltest.utils.CmdUtils;
 import com.airent.appinternaltest.utils.ZipUtils;
-import com.mysql.jdbc.log.LogUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -11,14 +10,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class ChannelApkController {
+
+
+    @RequestMapping("/lookChannles")
+    public String lookChannles(HttpSession session, Model model) throws Exception {
+        String channelPath = session.getServletContext().getRealPath("/channle");
+        File channleDir = new File(channelPath);
+        if (channleDir.exists() && channleDir.isDirectory()) {
+
+            File channleFile = new File(channleDir, "channel");
+            if (!channleFile.exists() || channleFile.isDirectory()) {
+                channleFile.createNewFile();
+            }
+
+            List<String> channels = getChannelsToFile(channleFile);
+            model.addAttribute("channels", channels);
+        }
+
+        return "lookChannles";
+    }
+
+
+    @RequestMapping("/editChannelFile")
+    public String editChannelFile(HttpSession session, Model model) throws Exception {
+        String channelPath = session.getServletContext().getRealPath("/channle");
+        File channleDir = new File(channelPath);
+        if (channleDir.exists() && channleDir.isDirectory()) {
+
+            File channleFile = new File(channleDir, "channel");
+            if (!channleFile.exists() || channleFile.isDirectory()) {
+                channleFile.createNewFile();
+            }
+
+            List<String> channels = getChannelsToFile(channleFile);
+            model.addAttribute("channels", channels);
+        }
+
+        return "editChannle";
+    }
 
     @RequestMapping("/channel")
     public String channelApk(HttpSession session, Model model) throws Exception {
@@ -82,6 +117,8 @@ public class ChannelApkController {
                 if (!channelDir.exists() || channelDir.isFile()) {
                     channelDir.mkdirs();
                 }
+
+                saveChannelToFile(channelPath, channels);
 
 
                 //加固 没签名的apk路径
@@ -211,6 +248,73 @@ public class ChannelApkController {
             }
         }
         f.delete();//最后删除该目录中所有文件后就删除该目录
+    }
+
+    /**
+     * 保存渠道信息(会进行去重)
+     *
+     * @param channel
+     * @param channelPath
+     */
+    private void saveChannelToFile(String channelPath, String channel) throws Exception {
+        if (!StringUtils.isEmpty(channelPath)) {
+
+            File channelDer = new File(channelPath);
+            if (channelDer.exists() && channelDer.isDirectory()) {
+                File channleFile = new File(channelDer, "channel");
+                if (!channleFile.exists() || channleFile.isDirectory()) {
+                    channleFile.createNewFile();
+                }
+
+                if (!StringUtils.isEmpty(channel)) {
+
+                    List<String> channels = getChannelsToFile(channleFile);
+
+                    FileOutputStream fos = new FileOutputStream(channleFile, true);
+                    PrintStream ps = new PrintStream(fos);
+
+                    if (channel.contains(",")) {
+                        String[] split = channel.split(",");
+                        for (int i = 0; i < split.length; i++) {
+
+                            String c = split[i];
+                            if (!channels.contains(c)) {
+                                ps.println(c);
+                            }
+
+                        }
+                    } else {
+                        if (!channels.contains(channel)) {
+                            ps.println(channel);
+                        }
+                    }
+
+                    ps.close();
+                    fos.close();
+                }
+
+
+            }
+
+        }
+
+    }
+
+
+    /**
+     * 获取文件中的渠道信息
+     */
+    private List<String> getChannelsToFile(File file) throws Exception {
+        List<String> strs = new ArrayList<>();
+        if (file != null) {
+            String str = "";
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            while ((str = br.readLine()) != null) {
+                strs.add(str);
+            }
+        }
+
+        return strs;
     }
 
 
