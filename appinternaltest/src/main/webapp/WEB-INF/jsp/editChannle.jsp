@@ -17,12 +17,31 @@
 
     <script>
 
-        $("#okBtn").click(function () {
-            var r = confirm("确认进行保存吗");
-            if (r == true) {
-//                $('#channelContanner').val();
-            }
+        $(function () {
+            $("#okBtn").click(function () {
+                var r = confirm("确认进行保存吗");
+                if (r == true) {
+                    var channels = $('#channelContanner').val();
+                    var split = channels.split("\n");
+                    var channelStr = split.join(',');
+                    window.location = GetUrlPath() + "/saveChannel?channels=" + channelStr
+                }
+            })
 
+
+            /**
+             * 当前页面所在目录路径
+             * 当前页面地址：http://www.abc.com/shop/page.php?id=123&s=142231233
+             * 结果：http://www.abc.com/shop
+             */
+            function GetUrlPath() {
+                var url = document.location.toString();
+                if (url.indexOf("/") != -1) {
+                    url = url.substring(0, url.lastIndexOf("/"));
+                }
+                return url;
+
+            }
         })
 
         $(document).ready(function () {
@@ -56,7 +75,7 @@
 </div>
 
 <div class="text-center" style="margin-bottom: 20px">
-    <button id="okBtn" type="submit" class="btn btn-success btn-lg">保存</button>
+    <button id="okBtn" class="btn btn-success btn-lg">保存啦</button>
 </div>
 
 </body>

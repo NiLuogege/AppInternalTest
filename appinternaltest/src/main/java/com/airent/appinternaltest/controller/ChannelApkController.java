@@ -57,6 +57,11 @@ public class ChannelApkController {
         return "editChannle";
     }
 
+    @RequestMapping("/saveChannel")
+    public void saveChannel(HttpSession session, HttpServletResponse response, String channels) throws Exception {
+        replaceChannelToFile(session, channels);
+    }
+
     @RequestMapping("/channel")
     public String channelApk(HttpSession session, Model model) throws Exception {
 
@@ -120,7 +125,7 @@ public class ChannelApkController {
                     channelDir.mkdirs();
                 }
 
-                saveChannelToFile(channelPath, channels);
+                saveChannelToFile(session, channels, true);
 
 
                 //加固 没签名的apk路径
@@ -255,10 +260,11 @@ public class ChannelApkController {
     /**
      * 保存渠道信息(会进行去重)
      *
+     * @param session
      * @param channel
-     * @param channelPath
      */
-    private void saveChannelToFile(String channelPath, String channel) throws Exception {
+    private void saveChannelToFile(HttpSession session, String channel, boolean isAppend) throws Exception {
+        String channelPath = session.getServletContext().getRealPath("/channle");
         if (!StringUtils.isEmpty(channelPath)) {
 
             File channelDer = new File(channelPath);
@@ -272,7 +278,7 @@ public class ChannelApkController {
 
                     List<String> channels = getChannelsToFile(channleFile);
 
-                    FileOutputStream fos = new FileOutputStream(channleFile, true);
+                    FileOutputStream fos = new FileOutputStream(channleFile, isAppend);
                     PrintStream ps = new PrintStream(fos);
 
                     if (channel.contains(",")) {
@@ -289,6 +295,51 @@ public class ChannelApkController {
                         if (!channels.contains(channel)) {
                             ps.println(channel);
                         }
+                    }
+
+                    ps.close();
+                    fos.close();
+                }
+
+
+            }
+
+        }
+
+    }
+
+
+    /**
+     * 替换渠道信息
+     *
+     * @param session
+     * @param channel
+     */
+    private void replaceChannelToFile(HttpSession session, String channel) throws Exception {
+        String channelPath = session.getServletContext().getRealPath("/channle");
+        if (!StringUtils.isEmpty(channelPath)) {
+
+            File channelDer = new File(channelPath);
+            if (channelDer.exists() && channelDer.isDirectory()) {
+                File channleFile = new File(channelDer, "channel");
+                if (!channleFile.exists() || channleFile.isDirectory()) {
+                    channleFile.createNewFile();
+                }
+
+                if (!StringUtils.isEmpty(channel)) {
+
+                    FileOutputStream fos = new FileOutputStream(channleFile, false);
+                    PrintStream ps = new PrintStream(fos);
+
+                    if (channel.contains(",")) {
+                        String[] split = channel.split(",");
+                        for (int i = 0; i < split.length; i++) {
+                            String c = split[i];
+                            ps.println(c);
+
+                        }
+                    } else {
+
                     }
 
                     ps.close();
