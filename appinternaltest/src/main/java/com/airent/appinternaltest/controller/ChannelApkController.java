@@ -58,8 +58,9 @@ public class ChannelApkController {
     }
 
     @RequestMapping("/saveChannel")
-    public void saveChannel(HttpSession session, HttpServletResponse response, String channels) throws Exception {
+    public String saveChannel(HttpSession session, HttpServletResponse response, String channels) throws Exception {
         replaceChannelToFile(session, channels);
+        return "redirect:/editChannelFile";
     }
 
     @RequestMapping("/channel")
