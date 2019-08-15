@@ -35,9 +35,25 @@
                     alert("vers为空");
                     return false;
                 }
+//                window.location = GetUrlPath() + "/startChannelApk?channels=" + channels + "&version=" + vers
+                $.ajax({
+                    url: GetUrlPath() + "/startChannelApk?channels=" + channels + "&version=" + vers,
+                    dataType: 'json',
+                    sync: false,
+                    success: function (data) {
+                        console.log("lalal", "成功啦")
+                        if (data.result == true) {
+                            window.location = GetUrlPath() + "/downloadApkZip?zipPath=" + encodeURI(data.zipPath) + "&fileName=" + encodeURI(data.zipName)
+                        }
+                    },
+                    error: function () {
+                        console.log("lalal", "失败啦")
+                    }
+                })
 
-                window.location = GetUrlPath() + "/startChannelApk?channels=" + channels + "&version=" + vers
+
             })
+
 
             /**
              * 当前页面所在目录路径
@@ -57,7 +73,6 @@
             $('#vC button').on('click', function () {
                 $('#selectVersion').text($(this).text())
             })
-
 
 
             $("#lookChannles").click(function () {
@@ -101,7 +116,7 @@
         </button>
 
         <button id="editChannelFile" type="button" class="btn btn-info" style=" margin-top: 10px">
-           编辑发版渠道配置-->
+            编辑发版渠道配置-->
         </button>
 
     </div>

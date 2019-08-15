@@ -101,8 +101,11 @@ public class ChannelApkController {
      *
      * @param channels 批量写入是需逗号","分隔
      */
+    @ResponseBody
     @RequestMapping("/startChannelApk")
-    public void startChannelApk(HttpSession session, HttpServletResponse response, String channels, String version) throws Exception {
+    public JSONObject startChannelApk(HttpSession session, HttpServletResponse response, String channels, String version) throws Exception {
+        JSONObject object = new JSONObject();
+        boolean result = false;
         if (!StringUtils.isEmpty(version)) {
             version = version.split(" ")[1].trim();
 
@@ -170,12 +173,9 @@ public class ChannelApkController {
                 if (zipSuccess) {
                     System.out.println("channel--> 压缩成功");
 
-                    downloadZip(response, zipPath, zipName);
-
-                    //下载完成后删除临时文件
-                    deleteFile(tempDir);
-                    System.out.println("channel--> 删除成功");
-
+                    result = true;
+                    object.put("zipPath", zipPath);
+                    object.put("zipName", zipName);
                 } else {
                     throw new RuntimeException("压缩失败");
                 }
@@ -184,6 +184,9 @@ public class ChannelApkController {
                 throw new RuntimeException("渠道号为空");
             }
         }
+
+        object.put("result", result);
+        return object;
     }
 
 
@@ -225,7 +228,7 @@ public class ChannelApkController {
                     String readResult = CmdUtils.execCmd(readChannel, true);
                     System.out.println("channel--> readResult--> " + readResult);
 
-                    result = readResult.replace(appFile.getAbsolutePath()+" : ", "");
+                    result = readResult.replace(appFile.getAbsolutePath() + " : ", "");
 
                     //删除临时文件
                     deleteFile(tempDir);
@@ -243,45 +246,61 @@ public class ChannelApkController {
         return object;
     }
 
+    @RequestMapping("/downloadApkZip")
+    public void downloadZip(HttpSession session, HttpServletResponse response, String zipPath, String fileName) throws Exception {
+        System.out.println("downloadZip--->zipPath= " + zipPath + " fileName= " + fileName);
 
-    private void downloadZip(HttpServletResponse response, String zipPath, String fileName) {
-        File zip = new File(zipPath);
-        if (zip.exists()) {
-            response.setContentType("application/force-download");//设置强制下载
-            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);//设置文件名
-            byte[] buffer = new byte[1024];
-            FileInputStream fis = null;
-            BufferedInputStream bis = null;
-            try {
-                fis = new FileInputStream(zip);
-                bis = new BufferedInputStream(fis);
-                ServletOutputStream os = response.getOutputStream();
-                int i = bis.read(buffer);
-                while (i != -1) {
-                    os.write(buffer, 0, i);
-                    i = bis.read(buffer);
-                }
-                System.out.println("channel--> 下载成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (bis != null) {
-                    try {
-                        bis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        String channelPath = session.getServletContext().getRealPath("/channle");
+
+        //创建临时文件夹
+        File tempDir = new File(channelPath, "tempDir");
+        if (!tempDir.exists() || tempDir.isFile()) {
+            tempDir.mkdirs();
+        }
+
+        if (!StringUtils.isEmpty(zipPath)) {
+            File zip = new File(zipPath);
+            if (zip.exists()) {
+                response.setContentType("application/force-download");//设置强制下载
+                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);//设置文件名
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(zip);
+                    bis = new BufferedInputStream(fis);
+                    ServletOutputStream os = response.getOutputStream();
+                    int i = bis.read(buffer);
+                    while (i != -1) {
+                        os.write(buffer, 0, i);
+                        i = bis.read(buffer);
                     }
-                }
+                    System.out.println("channel--> 下载成功");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         }
+
+        //下载完成后删除临时文件
+        deleteFile(tempDir);
+        System.out.println("channel--> 删除成功");
     }
 
     /**
