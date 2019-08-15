@@ -34,6 +34,12 @@ public class ChannelApkController {
         return "lookChannle";
     }
 
+    @RequestMapping("/uploadRootApkPage")
+    public String uploadRootApkPage(HttpSession session, Model model) throws Exception {
+
+        return "uploadRootApkPage";
+    }
+
 
     @RequestMapping("/editChannelFile")
     public String editChannelFile(HttpSession session, Model model) throws Exception {
@@ -245,6 +251,52 @@ public class ChannelApkController {
         object.put("result", result);
         return object;
     }
+
+
+    /**
+     * 上传应用
+     *
+     * @return
+     */
+    @RequestMapping("/uploadRootApk")
+    public void uploadRootApk(HttpSession session, HttpServletRequest request, String fileName) throws Exception {
+
+        String channelPath = session.getServletContext().getRealPath("/channle");
+
+        //创建临时文件夹
+        File rootApkDir = new File(channelPath, "rootApk");
+        if (!rootApkDir.exists() || rootApkDir.isFile()) {
+            rootApkDir.mkdirs();
+        }
+
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+
+        if (multipartResolver.isMultipart(request)) {
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+            Iterator<String> names = multiRequest.getFileNames();
+            if (names.hasNext()) {
+                MultipartFile file = multiRequest.getFile(names.next().toString());
+                if (file != null && !StringUtils.isEmpty(fileName)) {
+
+                    String[] split = fileName.split("_");
+                    if (split.length > 3) {
+                        String version = split[1].toUpperCase();
+                        File appFile = new File(rootApkDir, "XHJ_" + version + "_jiagu_nosign.apk");
+                        file.transferTo(appFile);
+                    } else {
+                        throw new RuntimeException("文件命名不规范");
+                    }
+                } else {
+                    throw new RuntimeException("文件有问题请查看");
+                }
+            } else {
+                throw new RuntimeException("没有选择上传资源");
+            }
+        } else {
+            throw new RuntimeException("没有选择上传资源");
+        }
+    }
+
 
     @RequestMapping("/downloadApkZip")
     public void downloadZip(HttpSession session, HttpServletResponse response, String zipPath, String fileName) throws Exception {
