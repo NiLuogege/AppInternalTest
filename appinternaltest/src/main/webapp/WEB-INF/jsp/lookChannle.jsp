@@ -96,6 +96,18 @@
 
 <h2 class="text-center" style="margin-top: 20px">查看apk对应渠道号</h2>
 
+
+<div class="panel panel-success" style="max-width: 30%;margin-left: 10px">
+    <div class="panel-heading">
+        <h3 class="panel-title">操作指北</h3>
+    </div>
+    <div class="panel-body text-left text-primary">
+        1. 上传要查看的apk<br>
+        2. 点击开始上传<br>
+        3. 程序运行完毕会显示当前渠道号<br>
+    </div>
+</div>
+
 <div class="panel-body">
 
     <div class="input-group container" style="margin-top: 20px">
