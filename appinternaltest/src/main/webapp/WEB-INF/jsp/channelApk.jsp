@@ -35,19 +35,29 @@
                     alert("vers为空");
                     return false;
                 }
+
+                $("#startBtn").text("正在生成中请稍后。。。")
+                $("#startBtn").attr('disabled',true)
+
 //                window.location = GetUrlPath() + "/startChannelApk?channels=" + channels + "&version=" + vers
                 $.ajax({
                     url: GetUrlPath() + "/startChannelApk?channels=" + channels + "&version=" + vers,
                     dataType: 'json',
-                    sync: false,
+                    sync: true,
                     success: function (data) {
                         console.log("lalal", "成功啦")
                         if (data.result == true) {
                             window.location = GetUrlPath() + "/downloadApkZip?zipPath=" + encodeURI(data.zipPath) + "&fileName=" + encodeURI(data.zipName)
                         }
+
+                        $("#startBtn").text("开始生成")
+                        $("#startBtn").attr('disabled',false)
                     },
                     error: function () {
                         console.log("lalal", "失败啦")
+
+                        $("#startBtn").text("开始生成")
+                        $("#startBtn").attr('disabled',false)
                     }
                 })
 
@@ -89,6 +99,8 @@
     </script>
 </head>
 <body>
+
+<div id="loading"></div>
 
 <h1 class="text-center" style="margin-top: 20px">自动生成渠道包</h1>
 
@@ -157,7 +169,7 @@
     </form>
 </div>
 
-<div class="text-center">
+<div class="text-center" style="margin-bottom: 20px">
     <button id="startBtn" type="submit" class="btn btn-success btn-lg">开始生成</button>
 </div>
 
