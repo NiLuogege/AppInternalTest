@@ -29,10 +29,7 @@ public class ChannelApkController {
 
 
     @RequestMapping("/lookChannle")
-    public String lookChannles(HttpSession session, Model model, String result) throws Exception {
-        System.out.println("及那俩了result=" + result);
-
-        model.addAttribute("result", "6666");
+    public String lookChannles(HttpSession session, Model model) throws Exception {
 
         return "lookChannle";
     }
@@ -228,7 +225,7 @@ public class ChannelApkController {
                     String readResult = CmdUtils.execCmd(readChannel, true);
                     System.out.println("channel--> readResult--> " + readResult);
 
-                    result = readResult.replace(appFile.getAbsolutePath(), "");
+                    result = readResult.replace(appFile.getAbsolutePath()+" : ", "");
 
                     //删除临时文件
                     deleteFile(tempDir);
@@ -242,7 +239,7 @@ public class ChannelApkController {
 
 
         JSONObject object = new JSONObject();
-        object.put("result", 777);
+        object.put("result", result);
         return object;
     }
 

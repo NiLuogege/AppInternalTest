@@ -41,29 +41,22 @@
                 var xhr = new XMLHttpRequest();
                 xhr.open("post", FileController, true);
                 xhr.onload = function (data) {
-                    console.log(data)
-//                    alert("上传完成");
                     $("#batchUploadBtn").attr('disabled', false);
                     $("#batchUploadBtn").val("上传");
                     $("#progressBar").parent().removeClass("active");
                     $("#progressBar").parent().hide();
 
-//                    window.location = GetUrlPath() + '/uploadChannelApk'
                 };
 
 
-                xhr.onreadystatechange = function() {
-
+                xhr.onreadystatechange = function () {
 
                     if (xhr.readyState == 4) {
-
                         //根据服务器的响应内容格式处理响应结果
                         var result = JSON.parse(xhr.responseText);
                         //根据返回结果判断验证码是否正确
 
-                        console.log("result",result.result)
-
-                        $("#result").text(result.result);
+                        $("#result").text("该渠道包 " + result.result);
                     }
                 }
                 xhr.upload.addEventListener("progress", progressFunction, false);
@@ -112,11 +105,8 @@
     </div>
 
 
-
-
     <div class="container" style="margin-top: 20px">
-        <span class="input-group-addon">结果：</span>
-        <h4 id="result"  style="color: #ff0000;">hahah${result}</h4>
+        <h4 id="result" style="color: #ff0000;"></h4>
     </div>
 
 
