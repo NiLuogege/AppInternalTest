@@ -140,7 +140,7 @@ public class ChannelApkController {
                 //对齐后的apk路径
                 String jiaguZipalignApkPath = tempDir + File.separator + version + "_jiagu_zipalign.apk";
                 //加固签名后的apk路径
-                String jiaguSignApkPath = tempDir + File.separator + version + "_jiagu_sign.apk";
+                String jiaguSignApkPath = tempDir + File.separator + "App_" + version + "_sign.apk";
                 //签名文件
                 String keyFilePath = channelPath + File.separator + "observer_app.keystore";
 
