@@ -258,8 +258,11 @@ public class ChannelApkController {
      *
      * @return
      */
+    @ResponseBody
     @RequestMapping("/uploadRootApk")
-    public void uploadRootApk(HttpSession session, HttpServletRequest request, String fileName) throws Exception {
+    public JSONObject uploadRootApk(HttpSession session, HttpServletRequest request, String fileName) throws Exception {
+
+        boolean success = false;
 
         String channelPath = session.getServletContext().getRealPath("/channle");
 
@@ -283,6 +286,8 @@ public class ChannelApkController {
                         String version = split[1].toUpperCase();
                         File appFile = new File(rootApkDir, "XHJ_" + version + "_jiagu_nosign.apk");
                         file.transferTo(appFile);
+
+                        success = true;
                     } else {
                         throw new RuntimeException("文件命名不规范");
                     }
@@ -295,6 +300,10 @@ public class ChannelApkController {
         } else {
             throw new RuntimeException("没有选择上传资源");
         }
+
+        JSONObject object = new JSONObject();
+        object.put("success", success);
+        return object;
     }
 
 
