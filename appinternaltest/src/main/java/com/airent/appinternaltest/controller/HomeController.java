@@ -170,6 +170,9 @@ public class HomeController {
 //        System.out.println("服务器的IP地址: " + request.getLocalAddr());
 //        System.out.println("服务器的主机名: " + request.getLocalName());
 //        System.out.println("得到客户机请求方式: " + request.getMethod());
+//        System.out.println("RequestURI: " + request.getRequestURI());
+//        System.out.println("getServerName: " + request.getServerName());
+
 
         //获取存储app文件夹的路径
         String appPath = session.getServletContext().getRealPath("/app");
@@ -209,7 +212,7 @@ public class HomeController {
                     } else {
                         app.setNickname(nickname);
                     }
-                    String downloadUrl = "http://" + request.getLocalName() + ":" + erverPort + "/app/download?md5Name=" + Md5Name;
+                    String downloadUrl = "http://" + request.getServerName() + ":" + erverPort + "/app/download?md5Name=" + Md5Name;
                     app.setDownloadUrl(downloadUrl);
 
                     makeQRImage(app, appRootDir);
